@@ -68,7 +68,7 @@ jobs:
             ## Re'start Client ${{ github.ref_name }}
 
             ### インストール方法
-            - **Windows**: `.msi` または `.exe` をダウンロードして実行
+            - **Windows**: `.msi` をダウンロードして実行
             - **macOS (Apple Silicon)**: `aarch64.dmg` をダウンロード
             - **macOS (Intel)**: `x86_64.dmg` をダウンロード
             - **Linux**: `.deb` または `.AppImage` をダウンロード
