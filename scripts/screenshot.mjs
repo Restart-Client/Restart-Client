@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
-const OUT = resolve(ROOT, "docs/screenshots");
+const OUT = resolve(ROOT, "assets");
 
 // ── モックデータ ─────────────────────────────────────────────────
 const USER_ID = "987654321";
