@@ -17,15 +17,15 @@ Discord Bot **[Re'start](https://restart2.restart-reboot.com/)** のデスクト
 
 | ダッシュボード | 武器 |
 |---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Weapons](docs/screenshots/weapons.png) |
+| ![Dashboard](https://github.com/Restart-Client/Restart-Client/releases/download/v1.0.0/dashboard.png) | ![Weapons](https://github.com/Restart-Client/Restart-Client/releases/download/v1.0.0/weapons.png) |
 
 | スキル | ペット |
 |---|---|
-| ![Skills](docs/screenshots/skills.png) | ![Pets](docs/screenshots/pets.png) |
+| ![Skills](https://github.com/Restart-Client/Restart-Client/releases/download/v1.0.0/skills.png) | ![Pets](https://github.com/Restart-Client/Restart-Client/releases/download/v1.0.0/pets.png) |
 
 | プリセット | HUD |
 |---|---|
-| ![Presets](docs/screenshots/presets.png) | ![HUD](docs/screenshots/hud.png) |
+| ![Presets](https://github.com/Restart-Client/Restart-Client/releases/download/v1.0.0/presets.png) | ![HUD](https://github.com/Restart-Client/Restart-Client/releases/download/v1.0.0/hud.png) |
 
 ---
 
