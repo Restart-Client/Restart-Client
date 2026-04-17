@@ -78,7 +78,7 @@ export function Sidebar({
             RE&apos;START
           </div>
           <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-ink-500">
-            v0.2.0
+            v1.0.0
           </div>
         </div>
       </div>

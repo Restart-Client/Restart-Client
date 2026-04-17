@@ -1,7 +1,7 @@
 {
   "name": "restart-client",
   "private": true,
-  "version": "0.2.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Re'start 用の高速・快適なデスクトップクライアント",
   "packageManager": "pnpm@9.12.0",
