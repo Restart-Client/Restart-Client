@@ -9,8 +9,10 @@ import {
   LogOut,
   PawPrint,
   Search,
+  Settings,
   Sparkles,
   Swords,
+  Layers,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useAuthStore } from "@/stores/auth";
@@ -23,7 +25,9 @@ export type NavKey =
   | "skills"
   | "items"
   | "materials"
-  | "pets";
+  | "pets"
+  | "presets"
+  | "settings";
 
 interface NavItem {
   key: NavKey;
@@ -38,6 +42,8 @@ const NAV: NavItem[] = [
   { key: "items", label: "アイテム", icon: Backpack },
   { key: "materials", label: "素材", icon: Blocks },
   { key: "pets", label: "ペット", icon: PawPrint },
+  { key: "presets", label: "プリセット", icon: Layers },
+  { key: "settings", label: "設定", icon: Settings },
 ];
 
 interface SidebarProps {

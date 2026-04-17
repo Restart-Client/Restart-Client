@@ -12,6 +12,8 @@
   "app": {
     "windows": [
       {
+        "label": "desk",
+        "url": "desk.html",
         "title": "Re'start Client",
         "width": 1280,
         "height": 820,
@@ -24,7 +26,24 @@
         "backgroundColor": "#05070f",
         "theme": "Dark",
         "titleBarStyle": "Overlay",
-        "hiddenTitle": true
+        "hiddenTitle": true,
+        "visible": false
+      },
+      {
+        "label": "hud",
+        "url": "hud.html",
+        "title": "Re'start HUD",
+        "width": 360,
+        "height": 1080,
+        "minWidth": 300,
+        "resizable": true,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "visible": false,
+        "focus": false,
+        "theme": "Dark"
       }
     ],
     "security": {

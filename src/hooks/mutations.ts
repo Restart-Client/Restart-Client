@@ -11,6 +11,7 @@ import type {
 } from "@/api/types";
 import { qk } from "./keys";
 import { useApi } from "./use-api";
+import { emitDataChanged } from "@/lib/window-sync";
 
 function humanizeError(e: unknown): string {
   if (e instanceof ApiError) {
@@ -39,6 +40,7 @@ export function useSetSkill() {
       // 装備状態は UI 側で持つ or 今後のエンドポイントで取得する想定。
       toast.success(skillId === 0 ? "スキルを解除しました" : "スキルを装備しました");
       qc.invalidateQueries({ queryKey: qk.skills() });
+      emitDataChanged("data:skills:changed");
     },
     onError: (e) => {
       toast.error("スキルの変更に失敗しました", {
@@ -90,6 +92,7 @@ export function useSetWeapon(weaponCategoryId: number | null) {
       // 他カテゴリーも装備状態が変わっている可能性があるので invalidate
       qc.invalidateQueries({ queryKey: ["weapons-in-category"] });
       qc.invalidateQueries({ queryKey: qk.weaponCategories() });
+      emitDataChanged("data:weapons:changed");
     },
   });
 }
@@ -109,6 +112,7 @@ export function useSetTool() {
         res.removed ? "ツールを解除しました" : "ツールを装備しました",
       );
       qc.invalidateQueries({ queryKey: qk.items() });
+      emitDataChanged("data:items:changed");
     },
     onError: (e) => {
       toast.error("ツールの変更に失敗しました", {
@@ -158,6 +162,7 @@ export function useTogglePet() {
       );
       qc.invalidateQueries({ queryKey: qk.pets() });
       qc.invalidateQueries({ queryKey: qk.battlePets() });
+      emitDataChanged("data:pets:changed");
     },
   });
 }
@@ -197,6 +202,7 @@ export function useSetBattlePets() {
       toast.success("ペット編成を更新しました");
       qc.invalidateQueries({ queryKey: qk.pets() });
       qc.invalidateQueries({ queryKey: qk.battlePets() });
+      emitDataChanged("data:pets:changed");
     },
   });
 }
@@ -234,4 +240,114 @@ export function useRemoveAllBattlePets() {
 export function findEquippedSkill(_skills: SkillsResponse | undefined) {
   // 現在の API では取得不可。UI では「最後に押したボタン」をハイライトする戦略。
   return null;
+}
+
+// ────────────────────────────────────────────────────────
+// プリセット適用 (武器 → スキル → ツール → ペット一括)
+// ────────────────────────────────────────────────────────
+
+import type { Preset } from "@/stores/presets";
+import { useSettingsStore } from "@/stores/settings";
+
+export function useApplyPreset() {
+  const api = useApi();
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (preset: Preset) => {
+      const tasks: Array<{ label: string; fn: () => Promise<unknown> }> = [];
+
+      if (preset.weapon_number !== null) {
+        tasks.push({
+          label: "武器",
+          fn: () => api.setWeapon(preset.weapon_number!),
+        });
+      }
+      if (preset.skill_id !== null) {
+        tasks.push({
+          label: "スキル",
+          fn: () => api.setSkill(preset.skill_id!),
+        });
+      }
+      if (preset.tool_id !== null) {
+        tasks.push({
+          label: "ツール",
+          fn: () => api.setTool(preset.tool_id!),
+        });
+      }
+      if (preset.pet_ids !== null) {
+        tasks.push({
+          label: "ペット",
+          fn: () => api.setBattlePets(preset.pet_ids!),
+        });
+      }
+
+      if (tasks.length === 0) return { preset, results: [] };
+
+      const toastId = toast.loading(`適用中… (0/${tasks.length})`, {
+        description: preset.name,
+      });
+
+      const results: Array<{ label: string; ok: boolean }> = [];
+      for (let i = 0; i < tasks.length; i++) {
+        const task = tasks[i];
+        try {
+          await task.fn();
+          results.push({ label: task.label, ok: true });
+        } catch {
+          results.push({ label: task.label, ok: false });
+        }
+        toast.loading(`適用中… (${i + 1}/${tasks.length})`, {
+          id: toastId,
+          description: preset.name,
+        });
+      }
+
+      toast.dismiss(toastId);
+      return { preset, results };
+    },
+
+    onSuccess: ({ preset, results }) => {
+      // 設定ストアを更新
+      const settings = useSettingsStore.getState();
+      if (preset.skill_id !== null) {
+        settings.setLastEquippedSkill(preset.skill_id);
+      }
+      if (preset.tool_id !== null) {
+        settings.setLastEquippedTool(preset.tool_id);
+      }
+
+      // キャッシュ無効化
+      const failed = results.filter((r) => !r.ok);
+      if (failed.length === 0) {
+        toast.success(`✓ ${preset.name} を適用しました`);
+      } else {
+        const failedLabels = failed.map((r) => r.label).join("・");
+        toast.warning(`一部失敗: ${failedLabels}`, {
+          description: `${preset.name} — 残りは正常に適用されました`,
+        });
+      }
+
+      if (preset.weapon_number !== null) {
+        qc.invalidateQueries({ queryKey: ["weapons-in-category"] });
+        qc.invalidateQueries({ queryKey: qk.weaponCategories() });
+        emitDataChanged("data:weapons:changed");
+      }
+      if (preset.skill_id !== null) {
+        qc.invalidateQueries({ queryKey: qk.skills() });
+        emitDataChanged("data:skills:changed");
+      }
+      if (preset.pet_ids !== null) {
+        qc.invalidateQueries({ queryKey: qk.pets() });
+        qc.invalidateQueries({ queryKey: qk.battlePets() });
+        emitDataChanged("data:pets:changed");
+      }
+    },
+
+    onError: (e) => {
+      toast.error("プリセットの適用に失敗しました", {
+        description: humanizeError(e),
+      });
+    },
+  });
 }

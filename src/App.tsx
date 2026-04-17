@@ -11,6 +11,8 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { useAuthStore } from "@/stores/auth";
 import { onAuthError, ApiError } from "@/api/client";
+import { usePresetStore } from "@/stores/presets";
+import { useSettingsStore } from "@/stores/settings";
 import { LoginScreen } from "@/pages/LoginScreen";
 import { AppShell } from "@/components/layout/AppShell";
 import { RateLimitIndicator } from "@/components/layout/RateLimitIndicator";
@@ -41,9 +43,11 @@ export function App() {
   const hydrate = useAuthStore((s) => s.hydrate);
   const markExpired = useAuthStore((s) => s.markExpired);
 
-  // 起動時のトークン復元
+  // 起動時のトークン復元 + ストア初期化
   useEffect(() => {
     hydrate();
+    usePresetStore.getState().load();
+    useSettingsStore.getState().load();
   }, [hydrate]);
 
   // グローバル認証エラーハンドラ

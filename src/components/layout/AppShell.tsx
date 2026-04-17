@@ -14,6 +14,8 @@ import { SkillsPage } from "@/pages/SkillsPage";
 import { ItemsPage } from "@/pages/ItemsPage";
 import { MaterialsPage } from "@/pages/MaterialsPage";
 import { PetsPage } from "@/pages/PetsPage";
+import { PresetsPage } from "@/pages/PresetsPage";
+import { SettingsPage } from "@/pages/SettingsPage";
 
 export function AppShell() {
   const [nav, setNav] = useState<NavKey>("dashboard");
@@ -77,6 +79,8 @@ export function AppShell() {
                 {nav === "items" && <ItemsPage />}
                 {nav === "materials" && <MaterialsPage />}
                 {nav === "pets" && <PetsPage />}
+                {nav === "presets" && <PresetsPage />}
+                {nav === "settings" && <SettingsPage />}
               </motion.div>
             </AnimatePresence>
           </div>

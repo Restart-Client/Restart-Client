@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   Backpack,
   Blocks,
+  Layers,
   PawPrint,
   Search,
   Sparkles,
@@ -142,6 +143,14 @@ export function CommandPalette({
         icon: PawPrint,
         nav: "pets",
         score: term ? score("ペット pets", term) : 1,
+      },
+      {
+        kind: "nav",
+        id: "nav:presets",
+        label: "プリセット",
+        icon: Layers,
+        nav: "presets",
+        score: term ? score("プリセット presets", term) : 1,
       },
     ];
 
